@@ -41,7 +41,7 @@ void moveFwd(void)
     BIN2 = 0;
     STDBY = 0; 
     
-}////****************endofmoveFwd
+}//endofmoveFwd
     
 //Function Name: moveBack
 //Author: Tom Kroczek
@@ -65,7 +65,7 @@ void moveBack(void)
     BIN1 = 0;
     STDBY = 0; 
     
-}////****************endofmoveBack
+}//endofmoveBack
 
 //Function Name: moveLeft
 //Author: Tom Kroczek
@@ -90,7 +90,7 @@ void moveLeft(void)
     BIN1 = 0;
     STDBY = 0;
      
-}////****************endofmoveLeft
+}//endofmoveLeft
 
 //Function Name: moveRight
 //Author: Tom Kroczek
@@ -115,7 +115,7 @@ void moveRight(void)
     BIN2 = 0;
     STDBY = 0;
      
-}////****************endofmoveRight 
+}//endofmoveRight 
     
 int main() 
 {
