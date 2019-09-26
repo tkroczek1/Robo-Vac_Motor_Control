@@ -1,0 +1,135 @@
+﻿// File Name: Robo-Vac_Motor_Drive 
+// Author: Tom Kroczek
+// Date: 9/25/2019
+// Modefied: 
+// CopyRight ©Fanshawe 2019
+// This Program controls motor movement based on the mbed signal sent to the dual H-Bridge Chip (TB6612FNG). Based on the PWM Signal out to the signal
+// and Input status for IN1 & IN2 for both motors, this will dictate the speed and which direction the motor moves. 4 functions run continutiously making
+// the object move forwards, backwards, left and right
+// In Refereance to https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide?_ga=2.244497413.1619793641.1569461243-1058473736.1550955095
+
+#include "mbed.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+PwmOut PWMA(p21);
+DigitalOut AIN2(p17);   // CCW Movement, CCW Motor A Movement, + Polarity, Controls Motor A in the forward direction
+DigitalOut AIN1(p18);   // CW  Movement, CW Motor  A Movement, - Polarity, Controls Motor A in the reverse direction
+DigitalOut STDBY(p22);  // H-Bridge functions when pull down resistor is actively pulled high 
+DigitalOut BIN2(p20);   // CCW Movement, CCW Motor B Movement, + Polarity, Controls Motor B in the forward direction
+DigitalOut BIN1(p19);   // CW  Movement, CW  Motor B Movement, - Polarity, Controls Motor B in the reverse direction
+
+//Function Name: MoveFwd
+//Author: Tom Kroczek
+//Date:9/25/2019
+//Input:N/A
+//Output:N/A
+//Description: Motors are programed to operate with a .4 PWM Signal. AIN2 & AIN1 = 1 causes the the signal to switch interal mosfets 
+//to produce a signal that is capable of spinning the motors in the forwards diretion when STDBY pull down resistor is set to high logic
+//After 3 seconds of operarion, PWM = 0 and the logic input to control the mosfets are = 0 along with the pull down resistor let to logic
+//Referancing: https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide?_ga=2.244497413.1619793641.1569461243-1058473736.1550955095 
+void moveFwd(void)
+{
+    
+    PWMA = .4;   
+    AIN2 = 1;   //Motor A Spins in the Forward Direction
+    BIN2 = 1;   //Motor B Spings in the Forward Direction
+    STDBY = 1; 
+    wait(3);
+    PWMA = 0;   
+    AIN2 = 0;   // Motors are in an off state
+    BIN2 = 0;
+    STDBY = 0; 
+    
+}////****************endofmoveFwd
+    
+//Function Name: moveBack
+//Author: Tom Kroczek
+//Date:9/25/2019
+//Input:N/A
+//Output:N/A
+//Description: Motors are programed to operate with a .7 PWM Signal. AIN1 & AIN1 = 1 causes the the signal to switch interal mosfets 
+//to produce a signal that is capable of spinning the motors in the Reverse diretion when STDBY pull down resistor is set to high logic
+//After 3 seconds of operarion, PWM = 0 and the logic input to control the mosfets are = 0 along with the pull down resistor let to logic
+//Referancing: https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide?_ga=2.244497413.1619793641.1569461243-1058473736.1550955095
+void moveBack(void)
+{
+    
+    PWMA = .7;   
+    AIN1 = 1;      //Motor A Spins in the Reverse Direction
+    BIN1 = 1;      //Motor B Spins in the Reverse Direction
+    STDBY = 1;     //Pull down resistor set to high to activate the circuit 
+    wait(3);
+    PWMA = 0;   
+    AIN1 = 0;
+    BIN1 = 0;
+    STDBY = 0; 
+    
+}////****************endofmoveBack
+
+//Function Name: moveLeft
+//Author: Tom Kroczek
+//Date:9/25/2019
+//Input:N/A
+//Output:N/A
+//Description: Motors are programed to operate with a .4 PWM Signal. AIN2 & AIN1= 1 causes the the signal to switch interal mosfets 
+//to produce a signal that is capable of spinning motor A in the forward direction and spinning motor B in the Reverse diretion when STDBY 
+//pull down resistor is set to high logic. The two motor's spinning in opposite directions causes it to turn left. After 3 seconds of operarion, 
+//PWM = 0 and the logic input to control the mosfets are = 0 along with the pull down resistor let to logic
+//Referancing: https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide?_ga=2.244497413.1619793641.1569461243-1058473736.1550955095  
+void moveLeft(void)
+{
+    
+    PWMA = .4;   
+    AIN2 = 1;   //Motor A Spins in the Forward Direction
+    BIN1 = 1;   //Motor B Spins in the Reverse Direction
+    STDBY = 1; 
+    wait(3);
+    PWMA = 0;   
+    AIN2 = 0;
+    BIN1 = 0;
+    STDBY = 0;
+     
+}////****************endofmoveLeft
+
+//Function Name: moveRight
+//Author: Tom Kroczek
+//Date:9/25/2019
+//Input:N/A
+//Output:N/A
+//Description: Motors are programed to operate with a .4 PWM Signal. AIN1 & AIN2= 1 causes the the signal to switch interal mosfets 
+//to produce a signal that is capable of spinning motor A in the reverse direction and spinning motor B in the forward diretion when STDBY 
+//pull down resistor is set to high logic. The two motor's spinning in opposite directions causes it to turn left. After 3 seconds of operarion, 
+//PWM = 0 and the logic input to control the mosfets are = 0 along with the pull down resistor let to logic
+//Referancing: https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide?_ga=2.244497413.1619793641.1569461243-1058473736.1550955095
+void moveRight(void)
+{
+    
+    PWMA = .4;   
+    AIN1 = 1;   //Motor A Spins in the Reverse Direction
+    BIN2 = 1;   //Motor B Spins in the Forward Direction
+    STDBY = 1; 
+    wait(3);
+    PWMA = 0;   
+    AIN1 = 0;
+    BIN2 = 0;
+    STDBY = 0;
+     
+}////****************endofmoveRight 
+    
+int main() 
+{
+    while(1)
+    { 
+    moveFwd();  //executes function to Move Robo-Vac Forward 
+    wait(.5);
+    moveBack(); //executes function to Move Robo-Vac Backwards 
+    wait(2);
+    moveLeft(); //executes function to Move Robo-Vac Left 
+    wait(2);
+    moveRight(); //executes function to Move Robo-Vac Right 
+    wait(2);
+    }
+
+    return 0;
+}
